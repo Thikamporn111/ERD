@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการห้องสมุด - ERD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .erd-diagram {
+            background: #f8f9ff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .erd-svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:hover {
+            background: #f5f7ff;
+        }
+        
+        .key-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .pk {
+            background: #ffd700;
+            color: #333;
+        }
+        
+        .fk {
+            background: #ff69b4;
+            color: white;
+        }
+        
+        .card {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .card h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .relationship {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .relationship-icon {
+            font-size: 2em;
+            margin: 0 15px;
+            color: #667eea;
+        }
+        
+        .entity-name {
+            font-weight: 600;
+            color: #764ba2;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-icon {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 ระบบจัดการห้องสมุด</h1>
+        <p class="subtitle">Entity Relationship Diagram (ERD) และโครงสร้างฐานข้อมูล</p>
+        
+        <div class="section">
+            <h2>🎯 ภาพรวมระบบ</h2>
+            <div class="card">
+                <p>ระบบจัดการห้องสมุดนี้ออกแบบมาเพื่อจัดการข้อมูลสมาชิก หนังสือ การยืม-คืน และบรรณารักษ์ โดยมีความสัมพันธ์ระหว่างตารางที่ชัดเจน เพื่อให้สามารถติดตามการยืมหนังสือ จัดการสต็อก และบริหารจัดการสมาชิกได้อย่างมีประสิทธิภาพ</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🔑 คำอธิบายสัญลักษณ์</h2>
+            <div class="card">
+                <h3>Primary Key - คีย์หลัก 🔑</h3>
+                <p>ฟิลด์ที่ใช้ระบุข้อมูลแต่ละแถวให้ไม่ซ้ำกัน เช่น member_id, book_id</p>
+            </div>
+            
+            <div class="card">
+                <h3>Foreign Key - คีย์นอก 🔗</h3>
+                <p>ฟิลด์ที่อ้างอิงไปยัง Primary Key ของตารางอื่น เพื่อเชื่อมความสัมพันธ์ระหว่างตาราง</p>
+            </div>
+            
+            <div class="card">
+                <h3>ไม่เป็นคีย์ 📝</h3>
+                <p>ฟิลด์ธรรมดาที่ไม่ใช่ Primary Key หรือ Foreign Key เช่น name, email, phone</p>
+                <p><strong>เพราะอะไร:</strong> ฟิลด์เหล่านี้เก็บข้อมูลทั่วไป ไม่ได้ใช้ระบุตัวตนหรือเชื่อมโยงตาราง แต่ใช้เก็บรายละเอียดเพิ่มเติมของข้อมูล</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📊 แผนภาพ ERD แบบกิ่งก้าน (Tree Structure)</h2>
+            <div class="erd-diagram">
+                <svg viewBox="0 0 900 700" class="erd-svg">
+                    <!-- Center: Borrow Entity (ศูนย์กลาง) -->
+                    <g filter="url(#shadow)">
+                        <rect x="360" y="280" width="180" height="180" fill="#F3E5F5" stroke="#9C27B0" stroke-width="3" rx="10"/>
+                        <rect x="360" y="280" width="180" height="40" fill="#9C27B0" rx="10"/>
+                    </g>
+                    <text x="450" y="305" text-anchor="middle" fill="white" font-weight="bold" font-size="18">การยืม (Borrow)</text>
+                    <text x="370" y="335" font-size="13" fill="#333">🔑 borrow_id (Primary Key)</text>
+                    <text x="370" y="355" font-size="13" fill="#333">🔗 member_id (Foreign Key)</text>
+                    <text x="370" y="375" font-size="13" fill="#333">🔗 book_id (Foreign Key)</text>
+                    <text x="370" y="395" font-size="13" fill="#333">📅 borrow_date</text>
+                    <text x="370" y="415" font-size="13" fill="#333">📅 due_date</text>
+                    <text x="370" y="435" font-size="13" fill="#333">📅 return_date</text>
+                    
+                    <!-- Left Branch: Member Entity -->
+                    <g filter="url(#shadow)">
+                        <rect x="30" y="40" width="200" height="180" fill="#E3F2FD" stroke="#2196F3" stroke-width="3" rx="10"/>
+                        <rect x="30" y="40" width="200" height="40" fill="#2196F3" rx="10"/>
+                    </g>
+                    <text x="130" y="65" text-anchor="middle" fill="white" font-weight="bold" font-size="18">สมาชิก (Member)</text>
+                    <text x="40" y="95" font-size="13" fill="#333">🔑 member_id (Primary Key)</text>
+                    <text x="40" y="115" font-size="13" fill="#333">📧 email</text>
+                    <text x="40" y="135" font-size="13" fill="#333">👤 name</text>
+                    <text x="40" y="155" font-size="13" fill="#333">📱 phone</text>
+                    <text x="40" y="175" font-size="13" fill="#333">📅 join_date</text>
+                    
+                    <!-- Connection Line: Member to Borrow - SOLID LINE -->
+                    <defs>
+                        <linearGradient id="gradBlue" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#2196F3;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 230 130 Q 295 200, 360 320" stroke="url(#gradBlue)" stroke-width="3" fill="none" marker-end="url(#arrowblue)"/>
+                    <circle cx="230" cy="130" r="10" fill="#2196F3" stroke="white" stroke-width="2"/>
+                    
+                    <!-- Labels for Member-Borrow relationship -->
+                    <g>
+                        <rect x="235" y="165" width="25" height="25" fill="#2196F3" rx="5"/>
+                        <text x="247" y="182" text-anchor="middle" fill="white" font-weight="bold" font-size="16">1</text>
+                    </g>
+                    <g>
+                        <rect x="320" y="295" width="25" height="25" fill="#9C27B0" rx="5"/>
+                        <text x="332" y="312" text-anchor="middle" fill="white" font-weight="bold" font-size="16">N</text>
+                    </g>
+                    <text x="270" y="230" font-size="14" fill="#1976D2" font-weight="bold">ยืม</text>
+                    
+                    <!-- Right Branch: Book Entity -->
+                    <g filter="url(#shadow)">
+                        <rect x="670" y="40" width="200" height="180" fill="#FFF3E0" stroke="#FF9800" stroke-width="3" rx="10"/>
+                        <rect x="670" y="40" width="200" height="40" fill="#FF9800" rx="10"/>
+                    </g>
+                    <text x="770" y="65" text-anchor="middle" fill="white" font-weight="bold" font-size="18">หนังสือ (Book)</text>
+                    <text x="680" y="95" font-size="13" fill="#333">🔑 book_id (Primary Key)</text>
+                    <text x="680" y="115" font-size="13" fill="#333">📖 title</text>
+                    <text x="680" y="135" font-size="13" fill="#333">✍️ author</text>
+                    <text x="680" y="155" font-size="13" fill="#333">📚 isbn</text>
+                    <text x="680" y="175" font-size="13" fill="#333">📂 category</text>
+                    <text x="680" y="195" font-size="13" fill="#333">✅ available</text>
+                    
+                    <!-- Connection Line: Book to Borrow - SOLID LINE -->
+                    <defs>
+                        <linearGradient id="gradOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#FF9800;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M 670 130 Q 605 200, 540 320" stroke="url(#gradOrange)" stroke-width="3" fill="none" marker-end="url(#arroworange)"/>
+                    <circle cx="670" cy="130" r="10" fill="#FF9800" stroke="white" stroke-width="2"/>
+                    
+                    <!-- Labels for Book-Borrow relationship -->
+                    <g>
+                        <rect x="615" y="165" width="25" height="25" fill="#FF9800" rx="5"/>
+                        <text x="627" y="182" text-anchor="middle" fill="white" font-weight="bold" font-size="16">1</text>
+                    </g>
+                    <g>
+                        <rect x="545" y="295" width="25" height="25" fill="#9C27B0" rx="5"/>
+                        <text x="557" y="312" text-anchor="middle" fill="white" font-weight="bold" font-size="16">N</text>
+                    </g>
+                    <text x="590" y="230" font-size="14" fill="#F57C00" font-weight="bold">ถูกยืม</text>
+                    
+                    <!-- Bottom Branch: Librarian Entity -->
+                    <g filter="url(#shadow)">
+                        <rect x="350" y="520" width="200" height="160" fill="#FCE4EC" stroke="#E91E63" stroke-width="3" rx="10"/>
+                        <rect x="350" y="520" width="200" height="40" fill="#E91E63" rx="10"/>
+                    </g>
+                    <text x="450" y="545" text-anchor="middle" fill="white" font-weight="bold" font-size="18">บรรณารักษ์</text>
+                    <text x="360" y="575" font-size="13" fill="#333">🔑 librarian_id (Primary Key)</text>
+                    <text x="360" y="595" font-size="13" fill="#333">👤 name</text>
+                    <text x="360" y="615" font-size="13" fill="#333">📧 email</text>
+                    <text x="360" y="635" font-size="13" fill="#333">🎭 role</text>
+                    <text x="360" y="655" font-size="13" fill="#333">📅 hire_date</text>
+                    
+                    <!-- Connection Line: Librarian to Borrow - SOLID LINE -->
+                    <path d="M 450 520 L 450 460" stroke="#E91E63" stroke-width="3" fill="none" marker-end="url(#arrowpink)"/>
+                    <circle cx="450" cy="520" r="10" fill="#E91E63" stroke="white" stroke-width="2"/>
+                    
+                    <!-- Labels for Librarian-Borrow relationship -->
+                    <g>
+                        <rect x="460" y="485" width="25" height="25" fill="#E91E63" rx="5"/>
+                        <text x="472" y="502" text-anchor="middle" fill="white" font-weight="bold" font-size="16">1</text>
+                    </g>
+                    <g>
+                        <rect x="460" y="455" width="25" height="25" fill="#9C27B0" rx="5"/>
+                        <text x="472" y="472" text-anchor="middle" fill="white" font-weight="bold" font-size="16">N</text>
+                    </g>
+                    <text x="465" y="495" font-size="14" fill="#C2185B" font-weight="bold">จัดการ</text>
+                    
+                    <!-- Arrow Markers with better styling -->
+                    <defs>
+                        <marker id="arrowblue" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,10 L10,5 z" fill="#9C27B0"/>
+                        </marker>
+                        <marker id="arroworange" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,10 L10,5 z" fill="#9C27B0"/>
+                        </marker>
+                        <marker id="arrowpink" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                            <path d="M0,0 L0,10 L10,5 z" fill="#E91E63"/>
+                        </marker>
+                        
+                        <!-- Shadow filter for entities -->
+                        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                            <feOffset dx="2" dy="2" result="offsetblur"/>
+                            <feComponentTransfer>
+                                <feFuncA type="linear" slope="0.3"/>
+                            </feComponentTransfer>
+                            <feMerge>
+                                <feMergeNode/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                </svg>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-icon pk">PK</div>
+                    <span>Primary Key - คีย์หลัก (ตัวระบุไม่ซ้ำ)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon fk">FK</div>
+                    <span>Foreign Key - คีย์นอก (อ้างอิงตารางอื่น)</span>
+                </div>
+                <div class="legend-item">
+                    <span><strong>1:M</strong> = One-to-Many (หนึ่งต่อหลาย)</span>
+                </div>
+                <div class="legend-item">
+                    <span><strong>M:M</strong> = Many-to-Many (หลายต่อหลาย)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>📋 โครงสร้างตาราง</h2>
+            <p style="background: #FFF9C4; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #FBC02D;">
+                <strong>📌 หมายเหตุ:</strong> ในคอลัมน์ "คีย์" จะระบุชัดเจนว่าฟิลด์นั้นเป็น <strong>Primary Key</strong>, <strong>Foreign Key</strong> หรือ <strong>ไม่เป็นคีย์</strong>
+            </p>
+            
+            <h3 style="color: #2196F3; margin: 20px 0 10px 0;">1. ตารางสมาชิก (Member)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อฟิลด์</th>
+                            <th>ชนิดข้อมูล</th>
+                            <th>คีย์</th>
+                            <th>คำอธิบาย</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>member_id</strong></td>
+                            <td>INT</td>
+                            <td><span class="key-badge pk">Primary Key</span></td>
+                            <td>รหัสสมาชิก (Auto Increment)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>email</strong></td>
+                            <td>VARCHAR(100)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>อีเมลสมาชิก (Unique)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name</strong></td>
+                            <td>VARCHAR(100)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>ชื่อ-นามสกุล</td>
+                        </tr>
+                        <tr>
+                            <td><strong>phone</strong></td>
+                            <td>VARCHAR(20)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>เบอร์โทรศัพท์</td>
+                        </tr>
+                        <tr>
+                            <td><strong>join_date</strong></td>
+                            <td>DATE</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>วันที่สมัครสมาชิก</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 style="color: #FF9800; margin: 20px 0 10px 0;">2. ตารางหนังสือ (Book)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อฟิลด์</th>
+                            <th>ชนิดข้อมูล</th>
+                            <th>คีย์</th>
+                            <th>คำอธิบาย</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>book_id</strong></td>
+                            <td>INT</td>
+                            <td><span class="key-badge pk">Primary Key</span></td>
+                            <td>รหัสหนังสือ (Auto Increment)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>title</strong></td>
+                            <td>VARCHAR(200)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>ชื่อหนังสือ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>author</strong></td>
+                            <td>VARCHAR(100)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>ชื่อผู้แต่ง</td>
+                        </tr>
+                        <tr>
+                            <td><strong>isbn</strong></td>
+                            <td>VARCHAR(20)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>รหัส ISBN (Unique)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>category</strong></td>
+                            <td>VARCHAR(50)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>หมวดหมู่หนังสือ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>available</strong></td>
+                            <td>BOOLEAN</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>สถานะว่าง (True/False)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 style="color: #9C27B0; margin: 20px 0 10px 0;">3. ตารางการยืม (Borrow)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อฟิลด์</th>
+                            <th>ชนิดข้อมูล</th>
+                            <th>คีย์</th>
+                            <th>คำอธิบาย</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>borrow_id</strong></td>
+                            <td>INT</td>
+                            <td><span class="key-badge pk">Primary Key</span></td>
+                            <td>รหัสการยืม (Auto Increment)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>member_id</strong></td>
+                            <td>INT</td>
+                            <td><span class="key-badge fk">Foreign Key</span></td>
+                            <td>อ้างอิงรหัสสมาชิก</td>
+                        </tr>
+                        <tr>
+                            <td><strong>book_id</strong></td>
+                            <td>INT</td>
+                            <td><span class="key-badge fk">Foreign Key</span></td>
+                            <td>อ้างอิงรหัสหนังสือ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>borrow_date</strong></td>
+                            <td>DATE</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>วันที่ยืม</td>
+                        </tr>
+                        <tr>
+                            <td><strong>due_date</strong></td>
+                            <td>DATE</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>วันที่ครบกำหนดคืน</td>
+                        </tr>
+                        <tr>
+                            <td><strong>return_date</strong></td>
+                            <td>DATE</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>วันที่คืนจริง (อาจเป็น NULL)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <h3 style="color: #E91E63; margin: 20px 0 10px 0;">4. ตารางบรรณารักษ์ (Librarian)</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อฟิลด์</th>
+                            <th>ชนิดข้อมูล</th>
+                            <th>คีย์</th>
+                            <th>คำอธิบาย</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>librarian_id</strong></td>
+                            <td>INT</td>
+                            <td><span class="key-badge pk">Primary Key</span></td>
+                            <td>รหัสบรรณารักษ์ (Auto Increment)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>name</strong></td>
+                            <td>VARCHAR(100)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>ชื่อ-นามสกุล</td>
+                        </tr>
+                        <tr>
+                            <td><strong>email</strong></td>
+                            <td>VARCHAR(100)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>อีเมล (Unique)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>role</strong></td>
+                            <td>VARCHAR(50)</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>ตำแหน่งหน้าที่</td>
+                        </tr>
+                        <tr>
+                            <td><strong>hire_date</strong></td>
+                            <td>DATE</td>
+                            <td>ไม่เป็นคีย์</td>
+                            <td>วันที่เริ่มงาน</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>🔗 ความสัมพันธ์ระหว่างตาราง</h2>
+            
+            <div class="relationship">
+                <span class="entity-name">สมาชิก (Member)</span>
+                <span class="relationship-icon">→ 1:M →</span>
+                <span class="entity-name">การยืม (Borrow)</span>
+            </div>
+            <div class="card">
+                <p><strong>คำอธิบาย:</strong> สมาชิก 1 คน สามารถยืมหนังสือได้หลายครั้ง แต่การยืมแต่ละครั้งเป็นของสมาชิก 1 คนเท่านั้น</p>
+            </div>
+            
+            <div class="relationship">
+                <span class="entity-name">หนังสือ (Book)</span>
+                <span class="relationship-icon">→ 1:M →</span>
+                <span class="entity-name">การยืม (Borrow)</span>
+            </div>
+            <div class="card">
+                <p><strong>คำอธิบาย:</strong> หนังสือ 1 เล่ม สามารถถูกยืมได้หลายครั้ง (ไม่พร้อมกัน) แต่การยืมแต่ละครั้งเป็นของหนังสือ 1 เล่มเท่านั้น</p>
+            </div>
+            
+            <div class="relationship">
+                <span class="entity-name">บรรณารักษ์ (Librarian)</span>
+                <span class="relationship-icon">→ 1:M →</span>
+                <span class="entity-name">การยืม (Borrow)</span>
+            </div>
+            <div class="card">
+                <p><strong>คำอธิบาย:</strong> บรรณารักษ์ 1 คน สามารถจัดการการยืม-คืนได้หลายรายการ แต่การยืมแต่ละครั้งถูกจัดการโดยบรรณารักษ์ 1 คนเท่านั้น</p>
+                <p><strong>หมายเหตุ:</strong> ในแผนภาพปัจจุบัน ความสัมพันธ์นี้แสดงด้วยเส้นประ เนื่องจากตาราง Borrow ยังไม่มี librarian_id เป็น Foreign Key ในระบบจริงควรเพิ่ม FK เพื่อบันทึกว่าบรรณารักษ์คนใดทำรายการ</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💡 สรุปและข้อดีของการออกแบบ</h2>
+            <div class="card">
+                <h3>✅ จุดเด่นของการออกแบบนี้</h3>
+                <p><strong>1. ป้องกันข้อมูลซ้ำซ้อน:</strong> แยกข้อมูลสมาชิก หนังสือ และการยืมออกจากกันชัดเจน</p>
+                <p><strong>2. ยืดหยุ่น:</strong> สามารถเพิ่มข้อมูลการยืมได้โดยไม่กระทบข้อมูลหลัก</p>
+                <p><strong>3. ตรวจสอบได้:</strong> สามารถตรวจสอบประวัติการยืมของสมาชิกและหนังสือแต่ละเล่มได้</p>
+                <p><strong>4. รองรับการขยาย:</strong> สามารถเพิ่มฟีเจอร์ใหม่ เช่น ค่าปรับ การจองหนังสือ ได้ในอนาคต</p>
+            </div>
+            <div class="card">
+                <h3>✅ สมาชิกกลุ่ม</h3>
+                <p><strong>1. Ms. Thikamporn Meehiraun</p>
+                <p><strong>2. Mr. Danuporn Kongsila</p>
+                <p><strong>3. Ms. Apisara Chantawiset</p>
+                <p><strong>4. Mr. Kiatkun Khunmen</p>
+                <p><strong>5. Mr. Tanawat chitratta</p>
+                <p><strong>6. Mr. Patipan Ponying</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
